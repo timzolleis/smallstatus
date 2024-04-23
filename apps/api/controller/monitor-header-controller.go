@@ -63,7 +63,7 @@ func (controller *MonitorHeaderController) UpdateHeader(c echo.Context) error {
 	monitorId := helper.StringToUint(c.Param("id"))
 	workspaceId := helper.StringToUint(c.Param("workspaceId"))
 	headerId := helper.StringToUint(c.Param("headerId"))
-	header := mapMonitorHeaderDTOTOModel(&body, monitorId)
+	header := mapMonitorHeaderDTOToModel(&body, monitorId)
 	header.ID = headerId
 	updatedHeader, err := controller.monitorHeaderService.Update(&header, monitorId, workspaceId)
 	if err != nil {
@@ -91,7 +91,7 @@ func mapMonitorHeaderDTO(header *model.MonitorHeader) dto.MonitorHeaderDTO {
 	}
 }
 
-func mapMonitorHeaderDTOTOModel(dto *dto.MonitorHeaderDTO, monitorId uint) model.MonitorHeader {
+func mapMonitorHeaderDTOToModel(dto *dto.MonitorHeaderDTO, monitorId uint) model.MonitorHeader {
 	return model.MonitorHeader{
 		Key:       dto.Key,
 		Value:     dto.Value,
