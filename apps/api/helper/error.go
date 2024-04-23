@@ -13,3 +13,7 @@ func HandleError(err error, c echo.Context) error {
 	}
 	return c.String(http.StatusInternalServerError, err.Error())
 }
+
+func InvalidRequest(c echo.Context) error {
+	return c.String(http.StatusBadRequest, "Invalid request")
+}

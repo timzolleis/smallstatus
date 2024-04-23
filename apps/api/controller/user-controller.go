@@ -2,12 +2,11 @@ package controller
 
 import (
 	"github.com/labstack/echo/v4"
+	"github.com/timzolleis/smallstatus/dto"
+	"github.com/timzolleis/smallstatus/helper"
+	"github.com/timzolleis/smallstatus/model"
+	"github.com/timzolleis/smallstatus/service"
 	"net/http"
-	"status/dto"
-	"status/helper"
-	"status/model"
-	_ "status/repository"
-	"status/service"
 	"strconv"
 )
 

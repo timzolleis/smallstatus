@@ -1,10 +1,10 @@
 package database
 
 import (
+	"github.com/timzolleis/smallstatus/model"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"log"
-	"status/model"
 )
 
 var DB *gorm.DB
@@ -19,7 +19,7 @@ func Connect() *gorm.DB {
 }
 
 func Migrate() {
-	models := []interface{}{&model.User{}, &model.ApiKey{}, model.Monitor{}, model.Workspace{}}
+	models := []interface{}{&model.User{}, &model.ApiKey{}, model.Monitor{}, model.Workspace{}, model.MonitorHeader{}}
 	err := DB.AutoMigrate(models...)
 	if err != nil {
 		log.Fatalf("Could not migrate database: %s", err.Error())

@@ -1,8 +1,8 @@
 package repository
 
 import (
-	"status/database"
-	"status/model"
+	"github.com/timzolleis/smallstatus/database"
+	"github.com/timzolleis/smallstatus/model"
 )
 
 type UserRepository struct{}

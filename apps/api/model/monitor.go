@@ -9,4 +9,5 @@ type Monitor struct {
 	Type        string
 	Interval    int
 	WorkspaceID uint
+	Headers     []MonitorHeader `gorm:"foreignKey:MonitorID"`
 }

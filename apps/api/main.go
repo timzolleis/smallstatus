@@ -4,9 +4,9 @@ import (
 	"flag"
 	"fmt"
 	"github.com/labstack/echo/v4"
-	"status/database"
-	"status/internal"
-	"status/routes"
+	"github.com/timzolleis/smallstatus/database"
+	"github.com/timzolleis/smallstatus/internal"
+	"github.com/timzolleis/smallstatus/routes"
 )
 
 func main() {
@@ -29,7 +29,10 @@ func main() {
 	if *startFlag {
 		fmt.Println("Starting the server...")
 		e := echo.New()
-		routes.RegisterUserRoutes(e)
+		apiBaseGroup := e.Group("/api")
+		workspaceBaseGroup := apiBaseGroup.Group("/workspaces/:workspaceId")
+		routes.RegisterUserRoutes(apiBaseGroup)
+		routes.RegisterMonitorRoutes(workspaceBaseGroup)
 		e.Logger.Fatal(e.Start(":8080"))
 	}
 

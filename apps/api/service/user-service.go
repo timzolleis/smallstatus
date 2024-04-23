@@ -1,9 +1,9 @@
 package service
 
 import (
-	"status/helper"
-	"status/model"
-	"status/repository"
+	"github.com/timzolleis/smallstatus/helper"
+	"github.com/timzolleis/smallstatus/model"
+	"github.com/timzolleis/smallstatus/repository"
 )
 
 type UserService struct {

@@ -1,10 +1,10 @@
 package internal
 
 import (
+	"github.com/timzolleis/smallstatus/database"
+	"github.com/timzolleis/smallstatus/helper"
+	"github.com/timzolleis/smallstatus/model"
 	"log"
-	"status/database"
-	"status/helper"
-	"status/model"
 )
 
 func SeedDatabase() {

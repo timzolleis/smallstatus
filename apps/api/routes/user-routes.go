@@ -2,15 +2,16 @@ package routes
 
 import (
 	"github.com/labstack/echo/v4"
-	"status/controller"
-	"status/repository"
-	"status/service"
+	"github.com/timzolleis/smallstatus/controller"
+	"github.com/timzolleis/smallstatus/repository"
+	"github.com/timzolleis/smallstatus/service"
 )
 
-func RegisterUserRoutes(e *echo.Echo) {
+func RegisterUserRoutes(baseGroup *echo.Group) {
 	userController := controller.UserController{Service: service.UserService{Repository: repository.UserRepository{}}}
-	e.GET("/api/users", userController.FindAll)
-	e.POST("/api/users", userController.Create)
-	e.GET("/api/users/:id", userController.FindById)
-	e.DELETE("/api/users/:id", userController.Delete)
+	group := baseGroup.Group("/users")
+	group.GET("", userController.FindAll)
+	group.POST("", userController.Create)
+	group.GET("/:id", userController.FindById)
+	group.DELETE("/:id", userController.Delete)
 }
