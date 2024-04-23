@@ -4,22 +4,23 @@ import (
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"log"
-	"status/internal/database/models"
+	"status/model"
 )
 
-var Database *gorm.DB
+var DB *gorm.DB
 
 func Connect() *gorm.DB {
 	db, err := gorm.Open(sqlite.Open("database.db"), &gorm.Config{})
 	if err != nil {
 		log.Fatalf("Could not open database connection: %s", err.Error())
 	}
-	Database = db
+	DB = db
 	return db
 }
 
 func Migrate() {
-	err := Database.AutoMigrate(&models.Monitor{}, &models.User{}, &models.ApiKey{})
+	models := []interface{}{&model.User{}, &model.ApiKey{}, model.Monitor{}, model.Workspace{}}
+	err := DB.AutoMigrate(models...)
 	if err != nil {
 		log.Fatalf("Could not migrate database: %s", err.Error())
 	}
