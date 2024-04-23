@@ -11,19 +11,13 @@ type MonitorRepository struct {
 
 func (repository *MonitorRepository) Create(monitor *model.Monitor) (*model.Monitor, error) {
 	err := database.DB.Create(monitor).Error
-	if err != nil {
-		return nil, err
-	}
-	return monitor, nil
+	return monitor, err
 }
 
 func (repository *MonitorRepository) FindById(id int, workspace int) (*model.Monitor, error) {
 	var monitor model.Monitor
 	err := database.DB.Where("id = ?", id).Where("workspace_id = ?", workspace).Find(&monitor).Error
-	if err != nil {
-		return nil, err
-	}
-	return &monitor, nil
+	return &monitor, err
 }
 
 func (repository *MonitorRepository) FindAll(workspace int) ([]model.Monitor, error) {
@@ -38,25 +32,18 @@ func (repository *MonitorRepository) FindAll(workspace int) ([]model.Monitor, er
 func (repository *MonitorRepository) Update(monitor *model.Monitor) (*model.Monitor, error) {
 	result := database.DB.Save(monitor)
 	err := result.Error
-	if err != nil {
-		return nil, err
-	}
 	if result.RowsAffected < 1 {
 		return nil, gorm.ErrRecordNotFound
 	}
-
-	return monitor, nil
+	return monitor, err
 }
 
 func (repository *MonitorRepository) Delete(id int, workspace int) error {
 	result := database.DB.Where("id = ?", id).Where("workspace_id = ?", workspace).Delete(&model.Monitor{}, id, workspace)
-	if result.Error != nil {
-		return result.Error
-	}
 	if result.RowsAffected < 1 {
 		return gorm.ErrRecordNotFound
 	}
-	return nil
+	return result.Error
 }
 
 // Monitor headers
@@ -67,8 +54,5 @@ func (repository *MonitorRepository) FindHeaders(id int, workspace int) ([]model
 		Where("monitors.id = ?", id).
 		Where("monitors.workspace_id = ?", workspace).
 		Find(&headers).Error
-	if err != nil {
-		return nil, err
-	}
-	return headers, nil
+	return headers, err
 }

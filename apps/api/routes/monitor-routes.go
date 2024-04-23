@@ -8,7 +8,7 @@ import (
 )
 
 func RegisterMonitorRoutes(baseGroup *echo.Group) {
-	monitorController := controller.MonitorController{Service: service.MonitorService{Repository: repository.MonitorRepository{}}}
+	monitorController := controller.MonitorController{MonitorService: service.MonitorService{Repository: repository.MonitorRepository{}}}
 	group := baseGroup.Group("/monitors")
 
 	//Monitor routes
@@ -19,5 +19,8 @@ func RegisterMonitorRoutes(baseGroup *echo.Group) {
 	group.DELETE("/:id", monitorController.Delete)
 	//Monitor header routes
 	group.GET("/:id/headers", monitorController.FindHeaders)
-
+	group.POST("/:id/headers", monitorController.CreateHeader)
+	group.GET("/:id/headers/:headerId", monitorController.FindHeaderById)
+	group.PUT("/:id/headers/:headerId", monitorController.UpdateHeader)
+	group.DELETE("/:id/headers/:headerId", monitorController.DeleteHeader)
 }
