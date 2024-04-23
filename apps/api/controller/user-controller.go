@@ -11,11 +11,11 @@ import (
 )
 
 type UserController struct {
-	Service service.UserService
+	service service.UserService
 }
 
 func (controller *UserController) FindAll(c echo.Context) error {
-	users, err := controller.Service.FindAll()
+	users, err := controller.service.FindAll()
 	if err != nil {
 		return helper.HandleError(err, c)
 	}
@@ -30,7 +30,7 @@ func (controller *UserController) FindAll(c echo.Context) error {
 func (controller *UserController) FindById(c echo.Context) error {
 	idString := c.Param("id")
 	id, _ := strconv.Atoi(idString)
-	user, err := controller.Service.FindUserById(id)
+	user, err := controller.service.FindUserById(id)
 	if err != nil {
 		return helper.HandleError(err, c)
 	}
@@ -49,7 +49,7 @@ func (controller *UserController) Create(c echo.Context) error {
 	if err != nil {
 		return c.String(http.StatusBadRequest, "Invalid request body")
 	}
-	user, err := controller.Service.CreateUser(body.Name, body.Email, body.Password)
+	user, err := controller.service.CreateUser(body.Name, body.Email, body.Password)
 	if err != nil {
 		return helper.HandleError(err, c)
 	}
@@ -59,7 +59,7 @@ func (controller *UserController) Create(c echo.Context) error {
 func (controller *UserController) Delete(c echo.Context) error {
 	idString := c.Param("id")
 	id, _ := strconv.Atoi(idString)
-	err := controller.Service.Delete(id)
+	err := controller.service.Delete(id)
 	if err != nil {
 		return helper.HandleError(err, c)
 	}

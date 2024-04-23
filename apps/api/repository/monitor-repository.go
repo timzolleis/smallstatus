@@ -14,7 +14,7 @@ func (repository *MonitorRepository) Create(monitor *model.Monitor) (*model.Moni
 	return monitor, err
 }
 
-func (repository *MonitorRepository) FindById(id int, workspace int) (*model.Monitor, error) {
+func (repository *MonitorRepository) FindById(id uint, workspace uint) (*model.Monitor, error) {
 	var monitor model.Monitor
 	err := database.DB.Where("id = ?", id).Where("workspace_id = ?", workspace).Find(&monitor).Error
 	return &monitor, err

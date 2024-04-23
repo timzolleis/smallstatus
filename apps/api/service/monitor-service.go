@@ -40,7 +40,7 @@ func (service *MonitorService) CreateMonitor(dto dto.CreateMonitorDTO, workspace
 	return createdMonitor, nil
 }
 
-func (service *MonitorService) FindMonitorById(id int, workspace int) (*model.Monitor, error) {
+func (service *MonitorService) FindMonitorById(id uint, workspace uint) (*model.Monitor, error) {
 	monitor, err := service.Repository.FindById(id, workspace)
 	if err != nil {
 		return nil, err
