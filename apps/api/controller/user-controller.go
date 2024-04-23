@@ -21,7 +21,7 @@ func (controller *UserController) FindAll(c echo.Context) error {
 	}
 	userDTOs := make([]dto.UserDTO, len(users))
 	for i, user := range users {
-		userDTOs[i] = mapToDTO(user)
+		userDTOs[i] = mapToDTO(&user)
 	}
 
 	return c.JSON(http.StatusOK, userDTOs)
@@ -34,7 +34,7 @@ func (controller *UserController) FindById(c echo.Context) error {
 	if err != nil {
 		return helper.HandleError(err, c)
 	}
-	return c.JSON(http.StatusOK, mapToDTO(*user))
+	return c.JSON(http.StatusOK, mapToDTO(user))
 }
 
 type CreateUserBody struct {
@@ -53,7 +53,7 @@ func (controller *UserController) Create(c echo.Context) error {
 	if err != nil {
 		return helper.HandleError(err, c)
 	}
-	return c.JSON(http.StatusCreated, mapToDTO(*user))
+	return c.JSON(http.StatusCreated, mapToDTO(user))
 }
 
 func (controller *UserController) Delete(c echo.Context) error {
@@ -66,7 +66,7 @@ func (controller *UserController) Delete(c echo.Context) error {
 	return c.NoContent(http.StatusNoContent)
 }
 
-func mapToDTO(user model.User) dto.UserDTO {
+func mapToDTO(user *model.User) dto.UserDTO {
 	return dto.UserDTO{
 		ID:    user.ID,
 		Name:  user.Name,
