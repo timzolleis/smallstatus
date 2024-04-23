@@ -18,10 +18,13 @@ func (repo *UserRepository) Create(user *model.User) (*model.User, error) {
 func (repo *UserRepository) FindById(id int) (*model.User, error) {
 	var user model.User
 	err := database.DB.First(&user, id).Error
-	if err != nil {
-		return nil, err
-	}
-	return &user, nil
+	return &user, err
+}
+
+func (repo *UserRepository) FindByEmail(email string) (*model.User, error) {
+	var user model.User
+	err := database.DB.Where("email = ?", email).First(&user).Error
+	return &user, err
 }
 
 func (repo *UserRepository) FindAll() ([]model.User, error) {

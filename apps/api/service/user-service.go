@@ -11,7 +11,6 @@ type UserService struct {
 }
 
 func (service *UserService) CreateUser(name string, email string, password string) (*model.User, error) {
-
 	hashedPassword, err := helper.HashPassword(password)
 	if err != nil {
 		return nil, err
@@ -21,33 +20,21 @@ func (service *UserService) CreateUser(name string, email string, password strin
 		Name:     name,
 		Password: hashedPassword,
 	}
-	createdUser, err := service.Repository.Create(&user)
-	if err != nil {
-		return nil, err
-	}
-	return createdUser, nil
+	return service.Repository.Create(&user)
 }
 
 func (service *UserService) FindUserById(id int) (*model.User, error) {
-	user, err := service.Repository.FindById(id)
-	if err != nil {
-		return nil, err
-	}
-	return user, nil
+	return service.Repository.FindById(id)
+}
+
+func (service *UserService) FindUserByEmail(email string) (*model.User, error) {
+	return service.Repository.FindByEmail(email)
 }
 
 func (service *UserService) FindAll() ([]model.User, error) {
-	users, err := service.Repository.FindAll()
-	if err != nil {
-		return nil, err
-	}
-	return users, nil
+	return service.Repository.FindAll()
 }
 
 func (service *UserService) Delete(id int) error {
-	err := service.Repository.Delete(id)
-	if err != nil {
-		return err
-	}
-	return nil
+	return service.Repository.Delete(id)
 }

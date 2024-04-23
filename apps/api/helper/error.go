@@ -9,11 +9,15 @@ import (
 
 func HandleError(err error, c echo.Context) error {
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return c.String(http.StatusNotFound, err.Error())
+		code := http.StatusNotFound
+		return c.JSON(code, NewErrorResponse(err.Error(), code))
 	}
-	return c.String(http.StatusInternalServerError, err.Error())
+	code := http.StatusInternalServerError
+
+	return c.JSON(code, NewErrorResponse(err.Error(), code))
 }
 
 func InvalidRequest(c echo.Context) error {
-	return c.String(http.StatusBadRequest, "Invalid request")
+	code := http.StatusBadRequest
+	return c.JSON(code, NewErrorResponse("Invalid request body", code))
 }

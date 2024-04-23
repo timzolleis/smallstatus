@@ -33,6 +33,7 @@ func main() {
 		workspaceBaseGroup := apiBaseGroup.Group("/workspaces/:workspaceId")
 		routes.RegisterUserRoutes(apiBaseGroup)
 		routes.RegisterMonitorRoutes(workspaceBaseGroup)
+		routes.RegisterAuthRoutes(apiBaseGroup)
 		e.Logger.Fatal(e.Start(":8080"))
 	}
 
