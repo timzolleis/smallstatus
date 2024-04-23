@@ -38,7 +38,7 @@ func main() {
 	}
 
 	// If no flags are set, or you need to handle other operations
-	if !*migrateFlag && !*startFlag {
+	if !*migrateFlag && !*startFlag && !*seedFlag {
 		fmt.Println("No operation specified. Use -migrate or -start.")
 	}
 }

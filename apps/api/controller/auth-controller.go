@@ -37,7 +37,7 @@ func (controller *AuthController) Login(c echo.Context) error {
 	}
 	isValidPassword := helper.CheckPassword(loginDTO.Password, user.Password)
 	if !isValidPassword {
-		return helper.InvalidRequest(c)
+		return c.JSON(http.StatusBadRequest, helper.NewErrorResponse("invalid_credentials", http.StatusBadRequest))
 	}
 	return c.String(http.StatusOK, "Alright")
 }
