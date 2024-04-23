@@ -36,10 +36,15 @@ func (repository *MonitorRepository) FindAll(workspace int) ([]model.Monitor, er
 }
 
 func (repository *MonitorRepository) Update(monitor *model.Monitor) (*model.Monitor, error) {
-	err := database.DB.Save(monitor).Error
+	result := database.DB.Save(monitor)
+	err := result.Error
 	if err != nil {
 		return nil, err
 	}
+	if result.RowsAffected < 1 {
+		return nil, gorm.ErrRecordNotFound
+	}
+
 	return monitor, nil
 }
 
