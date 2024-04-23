@@ -9,7 +9,7 @@ import (
 
 func SeedDatabase() {
 	hash, _ := helper.HashPassword("password")
-	initialUser := model.User{Name: "Tim Zolleis", Email: "tim@zolleis.net", Password: hash}
+	initialUser := model.User{Name: "John Doe", Email: "hello@test.com", Password: hash}
 	createUserResult := database.DB.Create(&initialUser)
 	if createUserResult.Error != nil {
 		log.Println("Could not create initial user")
