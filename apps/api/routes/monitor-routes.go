@@ -13,8 +13,9 @@ func RegisterMonitorRoutes(baseGroup *echo.Group) {
 
 	//Monitor routes
 	group.GET("", monitorController.FindAll)
-	group.GET("/:id", monitorController.FindById)
 	group.POST("", monitorController.Create)
+	group.GET("/:id", monitorController.FindById)
+	group.PUT("/:id", monitorController.Update)
 	group.DELETE("/:id", monitorController.Delete)
 	//Monitor header routes
 	group.GET("/:id/headers", monitorController.FindHeaders)

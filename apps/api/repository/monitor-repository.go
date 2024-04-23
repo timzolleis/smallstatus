@@ -35,6 +35,14 @@ func (repository *MonitorRepository) FindAll(workspace int) ([]model.Monitor, er
 	return monitors, nil
 }
 
+func (repository *MonitorRepository) Update(monitor *model.Monitor) (*model.Monitor, error) {
+	err := database.DB.Save(monitor).Error
+	if err != nil {
+		return nil, err
+	}
+	return monitor, nil
+}
+
 func (repository *MonitorRepository) Delete(id int, workspace int) error {
 	result := database.DB.Where("id = ?", id).Where("workspace_id = ?", workspace).Delete(&model.Monitor{}, id, workspace)
 	if result.Error != nil {

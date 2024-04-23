@@ -52,6 +52,22 @@ func (controller *MonitorController) Create(c echo.Context) error {
 	return c.JSON(http.StatusCreated, mapMonitorToDTO(monitor))
 }
 
+func (controller *MonitorController) Update(c echo.Context) error {
+	var body dto.MonitorDTO
+	err := c.Bind(&body)
+	if err != nil {
+		return helper.InvalidRequest(c)
+	}
+	monitor := mapMonitorDTOToModel(&body, helper.StringToUint(c.Param("workspaceId")))
+	monitor.ID = helper.StringToUint(c.Param("id"))
+	updatedMonitor, err := controller.Service.Update(&monitor)
+	if err != nil {
+		return helper.HandleError(err, c)
+	}
+	return c.JSON(http.StatusOK, mapMonitorToDTO(updatedMonitor))
+
+}
+
 func (controller *MonitorController) Delete(c echo.Context) error {
 	id, _ := strconv.Atoi(c.Param("id"))
 	workspace, _ := strconv.Atoi(c.Param("workspaceId"))
@@ -88,7 +104,6 @@ func mapMonitorHeaderDTO(header *model.MonitorHeader) dto.MonitorHeaderDTO {
 }
 
 func mapMonitorToDTO(monitor *model.Monitor) dto.MonitorDTO {
-
 	return dto.MonitorDTO{
 		ID:       monitor.ID,
 		Name:     monitor.Name,
@@ -96,5 +111,14 @@ func mapMonitorToDTO(monitor *model.Monitor) dto.MonitorDTO {
 		Interval: monitor.Interval,
 		Type:     monitor.Type,
 	}
+}
 
+func mapMonitorDTOToModel(dto *dto.MonitorDTO, workspace uint) model.Monitor {
+	return model.Monitor{
+		Name:        dto.Name,
+		Url:         dto.Url,
+		Interval:    dto.Interval,
+		Type:        dto.Type,
+		WorkspaceID: workspace,
+	}
 }

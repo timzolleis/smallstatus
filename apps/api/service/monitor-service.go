@@ -56,6 +56,14 @@ func (service *MonitorService) FindAll(workspace int) ([]model.Monitor, error) {
 	return monitors, nil
 }
 
+func (service *MonitorService) Update(monitor *model.Monitor) (*model.Monitor, error) {
+	updatedMonitor, err := service.Repository.Update(monitor)
+	if err != nil {
+		return nil, err
+	}
+	return updatedMonitor, nil
+}
+
 func (service *MonitorService) Delete(id int, workspace int) error {
 	err := service.Repository.Delete(id, workspace)
 	if err != nil {
