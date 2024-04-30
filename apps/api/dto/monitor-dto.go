@@ -4,7 +4,9 @@ type MonitorDTO struct {
 	ID       uint   `json:"id"`
 	Name     string `json:"name"`
 	Url      string `json:"url"`
-	Type     string `json:"type"`
+	Method   string `json:"method"`
+	Timeout  int    `json:"timeout"`
+	Retries  int    `json:"retries"`
 	Interval int    `json:"interval"`
 }
 
@@ -18,7 +20,9 @@ type CreateMonitorDTO struct {
 	Name     string                   `json:"name"`
 	Url      string                   `json:"url"`
 	Interval int                      `json:"interval"`
-	Type     string                   `json:"type"`
+	Method   string                   `json:"method"`
+	Timeout  int                      `json:"timeout"`
+	Retries  int                      `json:"retries"`
 	Headers  []CreateMonitorHeaderDTO `json:"headers"`
 }
 

@@ -29,7 +29,9 @@ func (service *MonitorService) CreateMonitor(dto dto.CreateMonitorDTO, workspace
 		Name:        dto.Name,
 		Url:         dto.Url,
 		Interval:    dto.Interval,
-		Type:        dto.Type,
+		Retries:     dto.Retries,
+		Timeout:     dto.Timeout,
+		Method:      dto.Method,
 		WorkspaceID: workspace,
 		Headers:     headers,
 	}

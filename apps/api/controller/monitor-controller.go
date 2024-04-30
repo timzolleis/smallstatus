@@ -83,7 +83,9 @@ func mapMonitorToDTO(monitor *model.Monitor) dto.MonitorDTO {
 		Name:     monitor.Name,
 		Url:      monitor.Url,
 		Interval: monitor.Interval,
-		Type:     monitor.Type,
+		Method:   monitor.Method,
+		Retries:  monitor.Retries,
+		Timeout:  monitor.Timeout,
 	}
 }
 
@@ -92,7 +94,9 @@ func mapMonitorDTOToModel(dto *dto.MonitorDTO, workspace uint) model.Monitor {
 		Name:        dto.Name,
 		Url:         dto.Url,
 		Interval:    dto.Interval,
-		Type:        dto.Type,
+		Retries:     dto.Retries,
+		Timeout:     dto.Timeout,
+		Method:      dto.Method,
 		WorkspaceID: workspace,
 	}
 }

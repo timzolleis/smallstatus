@@ -11,7 +11,9 @@ func Test_mapMonitorDTOToModel(t *testing.T) {
 	name := "MyMonitor"
 	url := "https://example.com"
 	interval := 30
-	monitorType := "http"
+	method := "POST"
+	retries := 5
+	monitorTimeout := 10
 	workspace := uint(1)
 
 	type args struct {
@@ -28,8 +30,10 @@ func Test_mapMonitorDTOToModel(t *testing.T) {
 			want: model.Monitor{
 				Name:        name,
 				Url:         url,
-				Type:        monitorType,
+				Method:      method,
 				Interval:    interval,
+				Retries:     retries,
+				Timeout:     monitorTimeout,
 				WorkspaceID: workspace,
 			},
 			args: args{
@@ -37,7 +41,9 @@ func Test_mapMonitorDTOToModel(t *testing.T) {
 					Name:     name,
 					Url:      url,
 					Interval: interval,
-					Type:     monitorType},
+					Method:   method,
+					Retries:  retries,
+					Timeout:  monitorTimeout},
 				workspace: workspace,
 			},
 		},
@@ -55,7 +61,10 @@ func Test_mapMonitorToDTO(t *testing.T) {
 	name := "MyMonitor"
 	url := "https://example.com"
 	interval := 30
-	monitorType := "http"
+	method := "POST"
+	retries := 5
+	monitorTimeout := 10
+	workspace := uint(1)
 
 	type args struct {
 		monitor *model.Monitor
@@ -69,16 +78,21 @@ func Test_mapMonitorToDTO(t *testing.T) {
 			name: "Valid Model",
 			args: args{
 				monitor: &model.Monitor{
-					Name:     name,
-					Url:      url,
-					Type:     monitorType,
-					Interval: interval,
+					Name:        name,
+					Url:         url,
+					Method:      method,
+					Retries:     retries,
+					Timeout:     monitorTimeout,
+					WorkspaceID: workspace,
+					Interval:    interval,
 				},
 			},
 			want: dto.MonitorDTO{
 				Name:     name,
 				Url:      url,
-				Type:     monitorType,
+				Method:   method,
+				Retries:  retries,
+				Timeout:  monitorTimeout,
 				Interval: interval,
 			},
 		},
