@@ -15,8 +15,7 @@ type MonitorHeaderController struct {
 
 func (controller *MonitorHeaderController) FindHeaders(c echo.Context) error {
 	monitorId := helper.StringToUint(c.Param("id"))
-	workspaceId := helper.StringToUint(c.Param("workspaceId"))
-	headers, err := controller.monitorHeaderService.FindHeaders(monitorId, workspaceId)
+	headers, err := controller.monitorHeaderService.FindHeaders(monitorId)
 	if err != nil {
 		return helper.HandleError(err, c)
 	}
@@ -34,8 +33,7 @@ func (controller *MonitorHeaderController) CreateHeader(c echo.Context) error {
 		return helper.InvalidRequest(c)
 	}
 	monitorId := helper.StringToUint(c.Param("id"))
-	workspaceId := helper.StringToUint(c.Param("workspaceId"))
-	header, err := controller.monitorHeaderService.CreateHeader(&body, monitorId, workspaceId)
+	header, err := controller.monitorHeaderService.CreateHeader(&body, monitorId)
 	if err != nil {
 		return helper.HandleError(err, c)
 
@@ -45,9 +43,8 @@ func (controller *MonitorHeaderController) CreateHeader(c echo.Context) error {
 
 func (controller *MonitorHeaderController) FindHeader(c echo.Context) error {
 	monitorId := helper.StringToUint(c.Param("id"))
-	workspaceId := helper.StringToUint(c.Param("workspaceId"))
 	headerId := helper.StringToUint(c.Param("headerId"))
-	header, err := controller.monitorHeaderService.FindHeaderById(monitorId, workspaceId, headerId)
+	header, err := controller.monitorHeaderService.FindHeaderById(monitorId, headerId)
 	if err != nil {
 		return helper.HandleError(err, c)
 	}
@@ -61,11 +58,10 @@ func (controller *MonitorHeaderController) UpdateHeader(c echo.Context) error {
 		return helper.InvalidRequest(c)
 	}
 	monitorId := helper.StringToUint(c.Param("id"))
-	workspaceId := helper.StringToUint(c.Param("workspaceId"))
 	headerId := helper.StringToUint(c.Param("headerId"))
 	header := mapMonitorHeaderDTOToModel(&body, monitorId)
 	header.ID = headerId
-	updatedHeader, err := controller.monitorHeaderService.Update(&header, monitorId, workspaceId)
+	updatedHeader, err := controller.monitorHeaderService.Update(&header, monitorId)
 	if err != nil {
 		return helper.HandleError(err, c)
 	}
@@ -74,9 +70,8 @@ func (controller *MonitorHeaderController) UpdateHeader(c echo.Context) error {
 
 func (controller *MonitorHeaderController) DeleteHeader(c echo.Context) error {
 	monitorId := helper.StringToUint(c.Param("id"))
-	workspaceId := helper.StringToUint(c.Param("workspaceId"))
 	headerId := helper.StringToUint(c.Param("headerId"))
-	err := controller.monitorHeaderService.Delete(monitorId, workspaceId, headerId)
+	err := controller.monitorHeaderService.Delete(monitorId, headerId)
 	if err != nil {
 		return helper.HandleError(err, c)
 	}

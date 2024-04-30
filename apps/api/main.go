@@ -6,6 +6,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/timzolleis/smallstatus/database"
 	"github.com/timzolleis/smallstatus/internal"
+	"github.com/timzolleis/smallstatus/middleware"
 	"github.com/timzolleis/smallstatus/routes"
 )
 
@@ -31,7 +32,8 @@ func main() {
 		e := echo.New()
 		apiBaseGroup := e.Group("/api")
 		workspaceBaseGroup := apiBaseGroup.Group("/workspaces/:workspaceId")
-		routes.RegisterUserRoutes(apiBaseGroup)
+		workspaceBaseGroup.Use(middleware.AuthMiddleware)
+		workspaceBaseGroup.Use(middleware.WorkspaceMiddleware)
 		routes.RegisterMonitorRoutes(workspaceBaseGroup)
 		routes.RegisterAuthRoutes(apiBaseGroup)
 		e.Logger.Fatal(e.Start(":8080"))

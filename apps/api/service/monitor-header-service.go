@@ -11,8 +11,8 @@ type MonitorHeaderService struct {
 	MonitorRepository       repository.MonitorRepository
 }
 
-func (service *MonitorHeaderService) FindHeaders(monitorId uint, workspace uint) ([]model.MonitorHeader, error) {
-	monitor, err := service.MonitorRepository.FindById(monitorId, workspace)
+func (service *MonitorHeaderService) FindHeaders(monitorId uint) ([]model.MonitorHeader, error) {
+	monitor, err := service.MonitorRepository.FindById(monitorId)
 	if err != nil {
 		return nil, err
 	}
@@ -20,8 +20,8 @@ func (service *MonitorHeaderService) FindHeaders(monitorId uint, workspace uint)
 	return headers, err
 }
 
-func (service *MonitorHeaderService) FindHeaderById(monitorId uint, workspace uint, headerId uint) (*model.MonitorHeader, error) {
-	monitor, err := service.MonitorRepository.FindById(monitorId, workspace)
+func (service *MonitorHeaderService) FindHeaderById(monitorId uint, headerId uint) (*model.MonitorHeader, error) {
+	monitor, err := service.MonitorRepository.FindById(monitorId)
 	if err != nil {
 		return nil, err
 	}
@@ -29,12 +29,12 @@ func (service *MonitorHeaderService) FindHeaderById(monitorId uint, workspace ui
 	return header, err
 }
 
-func (service *MonitorHeaderService) CreateHeader(dto *dto.CreateMonitorHeaderDTO, monitorId uint, workspaceId uint) (*model.MonitorHeader, error) {
+func (service *MonitorHeaderService) CreateHeader(dto *dto.CreateMonitorHeaderDTO, monitorId uint) (*model.MonitorHeader, error) {
 	header := &model.MonitorHeader{
 		Key:   dto.Key,
 		Value: dto.Value,
 	}
-	monitor, err := service.MonitorRepository.FindById(monitorId, workspaceId)
+	monitor, err := service.MonitorRepository.FindById(monitorId)
 	if err != nil {
 		return nil, err
 	}
@@ -42,8 +42,8 @@ func (service *MonitorHeaderService) CreateHeader(dto *dto.CreateMonitorHeaderDT
 	return createdHeader, err
 }
 
-func (service *MonitorHeaderService) Update(header *model.MonitorHeader, monitorId uint, workspaceId uint) (*model.MonitorHeader, error) {
-	monitor, err := service.MonitorRepository.FindById(monitorId, workspaceId)
+func (service *MonitorHeaderService) Update(header *model.MonitorHeader, monitorId uint) (*model.MonitorHeader, error) {
+	monitor, err := service.MonitorRepository.FindById(monitorId)
 	if err != nil {
 		return nil, err
 	}
@@ -51,8 +51,8 @@ func (service *MonitorHeaderService) Update(header *model.MonitorHeader, monitor
 	return updatedHeader, err
 }
 
-func (service *MonitorHeaderService) Delete(monitorId uint, workspaceId uint, headerId uint) error {
-	monitor, err := service.MonitorRepository.FindById(monitorId, workspaceId)
+func (service *MonitorHeaderService) Delete(monitorId uint, headerId uint) error {
+	monitor, err := service.MonitorRepository.FindById(monitorId)
 	if err != nil {
 		return err
 	}

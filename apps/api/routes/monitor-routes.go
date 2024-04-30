@@ -13,6 +13,7 @@ func RegisterMonitorRoutes(baseGroup *echo.Group) {
 
 	//Monitor routes
 	monitorGroup := baseGroup.Group("/monitors")
+
 	monitorGroup.GET("", monitorController.FindAll)
 	monitorGroup.POST("", monitorController.Create)
 	monitorGroup.GET("/:id", monitorController.FindById)
