@@ -15,7 +15,7 @@ func (repo *UserRepository) Create(user *model.User) (*model.User, error) {
 	return user, nil
 }
 
-func (repo *UserRepository) FindById(id int) (*model.User, error) {
+func (repo *UserRepository) FindById(id uint) (*model.User, error) {
 	var user model.User
 	err := database.DB.First(&user, id).Error
 	return &user, err

@@ -30,8 +30,7 @@ func (controller *MonitorController) FindAll(c echo.Context) error {
 
 func (controller *MonitorController) FindById(c echo.Context) error {
 	id := helper.StringToUint(c.Param("id"))
-	workspaceId := helper.StringToUint(c.Param("workspaceId"))
-	monitor, err := controller.monitorService.FindMonitorById(id, workspaceId)
+	monitor, err := controller.monitorService.FindMonitorById(id)
 	if err != nil {
 		return helper.HandleError(err, c)
 	}
@@ -70,8 +69,7 @@ func (controller *MonitorController) Update(c echo.Context) error {
 
 func (controller *MonitorController) Delete(c echo.Context) error {
 	id, _ := strconv.Atoi(c.Param("id"))
-	workspace, _ := strconv.Atoi(c.Param("workspaceId"))
-	err := controller.monitorService.Delete(id, workspace)
+	err := controller.monitorService.Delete(id)
 	if err != nil {
 		return helper.HandleError(err, c)
 	}

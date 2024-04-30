@@ -14,13 +14,13 @@ func (repository *MonitorRepository) Create(monitor *model.Monitor) (*model.Moni
 	return monitor, err
 }
 
-func (repository *MonitorRepository) FindById(id uint, workspace uint) (*model.Monitor, error) {
+func (repository *MonitorRepository) FindById(id uint) (*model.Monitor, error) {
 	var monitor model.Monitor
-	err := database.DB.Where("id = ?", id).Where("workspace_id = ?", workspace).Find(&monitor).Error
+	err := database.DB.Where("id = ?", id).Find(&monitor).Error
 	return &monitor, err
 }
 
-func (repository *MonitorRepository) FindAll(workspace int) ([]model.Monitor, error) {
+func (repository *MonitorRepository) FindAllByWorkspace(workspace int) ([]model.Monitor, error) {
 	var monitors []model.Monitor
 	err := database.DB.Where("workspace_id = ?", workspace).Find(&monitors).Error
 	if err != nil {
@@ -38,8 +38,8 @@ func (repository *MonitorRepository) Update(monitor *model.Monitor) (*model.Moni
 	return monitor, err
 }
 
-func (repository *MonitorRepository) Delete(id int, workspace int) error {
-	result := database.DB.Where("id = ?", id).Where("workspace_id = ?", workspace).Delete(&model.Monitor{}, id, workspace)
+func (repository *MonitorRepository) Delete(id int) error {
+	result := database.DB.Where("id = ?", id).Delete(&model.Monitor{}, id)
 	if result.RowsAffected < 1 {
 		return gorm.ErrRecordNotFound
 	}
@@ -48,11 +48,10 @@ func (repository *MonitorRepository) Delete(id int, workspace int) error {
 
 // Monitor headers
 
-func (repository *MonitorRepository) FindHeaders(id int, workspace int) ([]model.MonitorHeader, error) {
+func (repository *MonitorRepository) FindHeaders(id int) ([]model.MonitorHeader, error) {
 	var headers []model.MonitorHeader
 	err := database.DB.Joins("JOIN monitors ON monitors.id = monitor_headers.monitor_id").
 		Where("monitors.id = ?", id).
-		Where("monitors.workspace_id = ?", workspace).
 		Find(&headers).Error
 	return headers, err
 }

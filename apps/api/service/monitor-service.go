@@ -40,8 +40,8 @@ func (service *MonitorService) CreateMonitor(dto dto.CreateMonitorDTO, workspace
 	return createdMonitor, nil
 }
 
-func (service *MonitorService) FindMonitorById(id uint, workspace uint) (*model.Monitor, error) {
-	monitor, err := service.Repository.FindById(id, workspace)
+func (service *MonitorService) FindMonitorById(id uint) (*model.Monitor, error) {
+	monitor, err := service.Repository.FindById(id)
 	if err != nil {
 		return nil, err
 	}
@@ -49,7 +49,7 @@ func (service *MonitorService) FindMonitorById(id uint, workspace uint) (*model.
 }
 
 func (service *MonitorService) FindAll(workspace int) ([]model.Monitor, error) {
-	monitors, err := service.Repository.FindAll(workspace)
+	monitors, err := service.Repository.FindAllByWorkspace(workspace)
 	if err != nil {
 		return nil, err
 	}
@@ -64,8 +64,8 @@ func (service *MonitorService) Update(monitor *model.Monitor) (*model.Monitor, e
 	return updatedMonitor, nil
 }
 
-func (service *MonitorService) Delete(id int, workspace int) error {
-	err := service.Repository.Delete(id, workspace)
+func (service *MonitorService) Delete(id int) error {
+	err := service.Repository.Delete(id)
 	if err != nil {
 		return err
 	}
@@ -74,8 +74,8 @@ func (service *MonitorService) Delete(id int, workspace int) error {
 
 // Monitor headers
 
-func (service *MonitorService) FindHeaders(id int, workspaceId int) ([]model.MonitorHeader, error) {
-	headers, err := service.Repository.FindHeaders(id, workspaceId)
+func (service *MonitorService) FindHeaders(id int) ([]model.MonitorHeader, error) {
+	headers, err := service.Repository.FindHeaders(id)
 	if err != nil {
 		return nil, err
 	}

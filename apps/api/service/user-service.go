@@ -23,7 +23,7 @@ func (service *UserService) CreateUser(name string, email string, password strin
 	return service.Repository.Create(&user)
 }
 
-func (service *UserService) FindUserById(id int) (*model.User, error) {
+func (service *UserService) FindUserById(id uint) (*model.User, error) {
 	return service.Repository.FindById(id)
 }
 
