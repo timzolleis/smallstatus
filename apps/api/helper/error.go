@@ -21,3 +21,8 @@ func InvalidRequest(c echo.Context) error {
 	code := http.StatusBadRequest
 	return c.JSON(code, NewErrorResponse("Invalid request body", code))
 }
+
+func NewForbiddenError(c echo.Context) error {
+	code := http.StatusForbidden
+	return c.JSON(code, NewErrorResponse("Forbidden", code))
+}

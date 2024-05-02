@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
 	"github.com/timzolleis/smallstatus/dto"
 	"github.com/timzolleis/smallstatus/helper"
@@ -13,8 +14,12 @@ type MonitorHeaderController struct {
 	monitorHeaderService service.MonitorHeaderService
 }
 
+func getHeaderId(c echo.Context) uint {
+	return helper.StringToUint(c.Param("headerId"))
+}
+
 func (controller *MonitorHeaderController) FindHeaders(c echo.Context) error {
-	monitorId := helper.StringToUint(c.Param("id"))
+	monitorId := getMonitorId(c)
 	headers, err := controller.monitorHeaderService.FindHeaders(monitorId)
 	if err != nil {
 		return helper.HandleError(err, c)
@@ -28,22 +33,29 @@ func (controller *MonitorHeaderController) FindHeaders(c echo.Context) error {
 
 func (controller *MonitorHeaderController) CreateHeader(c echo.Context) error {
 	var body = dto.CreateMonitorHeaderDTO{}
-	err := c.Bind(&body)
-	if err != nil {
+	if err := c.Bind(&body); err != nil {
 		return helper.InvalidRequest(c)
 	}
-	monitorId := helper.StringToUint(c.Param("id"))
+	if err := validateCreateHeaderDTO(body); err != nil {
+		return helper.InvalidRequest(c)
+	}
+	monitorId := getMonitorId(c)
 	header, err := controller.monitorHeaderService.CreateHeader(&body, monitorId)
 	if err != nil {
 		return helper.HandleError(err, c)
-
 	}
+
 	return c.JSON(http.StatusCreated, mapMonitorHeaderDTO(header))
 }
 
+func validateCreateHeaderDTO(createHeaderDTO dto.CreateMonitorHeaderDTO) error {
+	validate := validator.New()
+	return validate.Struct(createHeaderDTO)
+}
+
 func (controller *MonitorHeaderController) FindHeader(c echo.Context) error {
-	monitorId := helper.StringToUint(c.Param("id"))
-	headerId := helper.StringToUint(c.Param("headerId"))
+	monitorId := getMonitorId(c)
+	headerId := getHeaderId(c)
 	header, err := controller.monitorHeaderService.FindHeaderById(monitorId, headerId)
 	if err != nil {
 		return helper.HandleError(err, c)
@@ -53,14 +65,11 @@ func (controller *MonitorHeaderController) FindHeader(c echo.Context) error {
 
 func (controller *MonitorHeaderController) UpdateHeader(c echo.Context) error {
 	body := dto.MonitorHeaderDTO{}
-	err := c.Bind(&body)
-	if err != nil {
+	if err := c.Bind(&body); err != nil {
 		return helper.InvalidRequest(c)
 	}
-	monitorId := helper.StringToUint(c.Param("id"))
-	headerId := helper.StringToUint(c.Param("headerId"))
+	monitorId := getMonitorId(c)
 	header := mapMonitorHeaderDTOToModel(&body, monitorId)
-	header.ID = headerId
 	updatedHeader, err := controller.monitorHeaderService.Update(&header, monitorId)
 	if err != nil {
 		return helper.HandleError(err, c)
@@ -69,12 +78,12 @@ func (controller *MonitorHeaderController) UpdateHeader(c echo.Context) error {
 }
 
 func (controller *MonitorHeaderController) DeleteHeader(c echo.Context) error {
-	monitorId := helper.StringToUint(c.Param("id"))
-	headerId := helper.StringToUint(c.Param("headerId"))
-	err := controller.monitorHeaderService.Delete(monitorId, headerId)
-	if err != nil {
+	monitorId := getMonitorId(c)
+	headerId := getHeaderId(c)
+	if err := controller.monitorHeaderService.Delete(monitorId, headerId); err != nil {
 		return helper.HandleError(err, c)
 	}
+
 	return c.NoContent(http.StatusNoContent)
 }
 

@@ -8,7 +8,7 @@ import (
 	"net/http"
 )
 
-func WorkspaceMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
+func WorkspaceMemberMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		user := c.Get("user").(*model.User)
 		workspaceIdString := c.Param("workspaceId")
@@ -17,9 +17,14 @@ func WorkspaceMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 		}
 		workspaceId := helper.StringToUint(workspaceIdString)
 		workspaceService := service.WorkspaceService{}
+		workspace, err := workspaceService.FindById(workspaceId)
+		if err != nil {
+			return echo.NewHTTPError(http.StatusNotFound, "Workspace not found")
+		}
 		if !workspaceService.IsPartOfWorkspace(user.ID, workspaceId) {
 			return echo.NewHTTPError(http.StatusUnauthorized, "You are not part of this workspace")
 		}
+		c.Set("workspace", workspace)
 		return next(c)
 	}
 }
