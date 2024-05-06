@@ -16,7 +16,7 @@ func (repository *MonitorRepository) Create(monitor *model.Monitor) (*model.Moni
 
 func (repository *MonitorRepository) FindById(id uint) (*model.Monitor, error) {
 	var monitor model.Monitor
-	err := database.DB.Find(&monitor, id).Error
+	err := database.DB.First(&monitor, id).Error
 	return &monitor, err
 }
 

@@ -6,7 +6,6 @@ import (
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
-	"github.com/timzolleis/smallstatus/controller"
 	"github.com/timzolleis/smallstatus/database"
 	"github.com/timzolleis/smallstatus/internal"
 	"github.com/timzolleis/smallstatus/middleware"
@@ -33,7 +32,6 @@ func main() {
 	if *startFlag {
 		fmt.Println("Starting the server...")
 		e := echo.New()
-		e.GET("", controller.HandleHello)
 		e.Use(session.Middleware(sessions.NewCookieStore([]byte("secret"))))
 		apiBaseGroup := e.Group("/api")
 		workspaceBaseGroup := apiBaseGroup.Group("/workspaces/:workspaceId")
@@ -41,7 +39,7 @@ func main() {
 		workspaceBaseGroup.Use(middleware.WorkspaceMemberMiddleware)
 		routes.RegisterMonitorRoutes(workspaceBaseGroup)
 		routes.RegisterAuthRoutes(apiBaseGroup)
-		e.Logger.Fatal(e.Start(":8090"))
+		e.Logger.Fatal(e.Start(":8080"))
 	}
 
 	// If no flags are set, or you need to handle other operations

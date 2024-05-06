@@ -18,9 +18,9 @@ type CreateMonitorBody struct {
 }
 
 func (service *MonitorService) CreateMonitor(dto dto.CreateMonitorDTO, workspace uint) (*model.Monitor, error) {
-	headers := make([]model.MonitorHeader, len(dto.Headers))
+	headers := make([]model.RequestHeader, len(dto.Headers))
 	for i, header := range dto.Headers {
-		headers[i] = model.MonitorHeader{
+		headers[i] = model.RequestHeader{
 			Key:   header.Key,
 			Value: header.Value,
 		}
@@ -43,11 +43,7 @@ func (service *MonitorService) CreateMonitor(dto dto.CreateMonitorDTO, workspace
 }
 
 func (service *MonitorService) FindMonitorById(id uint) (*model.Monitor, error) {
-	monitor, err := service.Repository.FindById(id)
-	if err != nil {
-		return nil, err
-	}
-	return monitor, nil
+	return service.Repository.FindById(id)
 }
 
 func (service *MonitorService) FindAll(workspace uint) ([]model.Monitor, error) {

@@ -19,7 +19,7 @@ func Connect() *gorm.DB {
 }
 
 func Migrate() {
-	models := []interface{}{&model.User{}, &model.ApiKey{}, model.Monitor{}, model.Workspace{}, model.MonitorHeader{}}
+	models := []interface{}{&model.User{}, &model.ApiKey{}, model.Monitor{}, model.Workspace{}, model.RequestHeader{}}
 	err := DB.AutoMigrate(models...)
 	if err != nil {
 		log.Fatalf("Could not migrate database: %s", err.Error())

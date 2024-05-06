@@ -33,7 +33,7 @@ func (controller *MonitorController) isMonitorInWorkspace(monitorId uint, worksp
 }
 
 func (controller *MonitorController) FindAll(c echo.Context) error {
-	workspaceId := helper.StringToUint(c.Param("workspaceId"))
+	workspaceId := getWorkspaceId(c)
 	monitors, err := controller.monitorService.FindAll(workspaceId)
 	if err != nil {
 		return helper.HandleError(err, c)

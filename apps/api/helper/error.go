@@ -26,3 +26,8 @@ func NewForbiddenError(c echo.Context) error {
 	code := http.StatusForbidden
 	return c.JSON(code, NewErrorResponse("Forbidden", code))
 }
+
+func NewNotFoundError(c echo.Context) error {
+	code := http.StatusNotFound
+	return c.JSON(code, NewErrorResponse("Not Found", code))
+}

@@ -1,6 +1,6 @@
 package model
 
-type MonitorHeader struct {
+type RequestHeader struct {
 	Base
 	Key       string
 	Value     string

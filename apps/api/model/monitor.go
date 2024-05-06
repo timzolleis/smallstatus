@@ -1,9 +1,7 @@
 package model
 
-import "gorm.io/gorm"
-
 type Monitor struct {
-	gorm.Model
+	Base
 	Name        string
 	Url         string
 	Interval    int
@@ -11,5 +9,5 @@ type Monitor struct {
 	Retries     int
 	Method      string
 	WorkspaceID uint
-	Headers     []MonitorHeader `gorm:"foreignKey:MonitorID"`
+	Headers     []RequestHeader `gorm:"foreignKey:MonitorID"`
 }

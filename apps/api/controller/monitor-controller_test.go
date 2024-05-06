@@ -1,106 +1,110 @@
 package controller
 
 import (
+	"encoding/json"
+	"github.com/labstack/echo/v4"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"github.com/timzolleis/smallstatus/dto"
+	"github.com/timzolleis/smallstatus/helper"
 	"github.com/timzolleis/smallstatus/model"
-	"reflect"
+	"github.com/timzolleis/smallstatus/repository"
+	"github.com/timzolleis/smallstatus/service"
+	"net/http"
+	"net/http/httptest"
+	"strconv"
 	"testing"
 )
 
-func Test_mapMonitorDTOToModel(t *testing.T) {
-	name := "MyMonitor"
-	url := "https://example.com"
-	interval := 30
-	method := "POST"
-	retries := 5
-	monitorTimeout := 10
-	workspace := uint(1)
-
-	type args struct {
-		dto       *dto.MonitorDTO
-		workspace uint
+func getCreateMonitorDTO() *dto.CreateMonitorDTO {
+	return &dto.CreateMonitorDTO{
+		Name:     "Test Monitor",
+		Url:      "https://example.com",
+		Method:   "GET",
+		Timeout:  10,
+		Interval: 60,
+		Retries:  3,
 	}
+}
+
+func TestMonitorController_FindAll(t *testing.T) {
+	helper.SetupDb()
+	e := echo.New()
+
+	monitorService := service.MonitorService{Repository: repository.MonitorRepository{}}
+	monitorController := MonitorController{monitorService: monitorService}
+	e.GET("/workspaces/:workspaceId", monitorController.FindAll)
+	createMonitorDTO := getCreateMonitorDTO()
+	monitor, err := monitorService.CreateMonitor(*createMonitorDTO, 1)
+	require.NoError(t, err)
 	tests := []struct {
-		name string
-		args args
-		want model.Monitor
+		name          string
+		workspaceId   uint
+		expectedDtos  []dto.MonitorDTO
+		expectedCount int
 	}{
-		{
-			name: "Valid DTO",
-			want: model.Monitor{
-				Name:        name,
-				Url:         url,
-				Method:      method,
-				Interval:    interval,
-				Retries:     retries,
-				Timeout:     monitorTimeout,
-				WorkspaceID: workspace,
-			},
-			args: args{
-				dto: &dto.MonitorDTO{
-					Name:     name,
-					Url:      url,
-					Interval: interval,
-					Method:   method,
-					Retries:  retries,
-					Timeout:  monitorTimeout},
-				workspace: workspace,
-			},
-		},
+		{name: "One monitor in workspace 1", workspaceId: 1, expectedDtos: []dto.MonitorDTO{mapMonitorToDTO(monitor)}, expectedCount: 1},
+		{name: "No monitors in workspace 2", workspaceId: 2, expectedDtos: make([]dto.MonitorDTO, 0)},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := mapMonitorDTOToModel(tt.args.dto, tt.args.workspace); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("mapMonitorDTOToModel() = %v, want %v", got, tt.want)
-			}
+			req := httptest.NewRequest(http.MethodGet, "/", nil)
+			rec := httptest.NewRecorder()
+			c := e.NewContext(req, rec)
+			c.SetPath("/api/workspaces/:workspaceId/monitors")
+			c.SetParamNames("workspaceId")
+			c.SetParamValues(strconv.FormatUint(uint64(tt.workspaceId), 10))
+			helper.SetupSession(c)
+			monitorController.FindAll(c)
+			assert.Equal(t, http.StatusOK, rec.Code)
+			var monitors []dto.MonitorDTO
+			err = json.Unmarshal(rec.Body.Bytes(), &monitors)
+			require.NoError(t, err, "Unable to unmarshal response JSON")
+			assert.Equal(t, tt.expectedCount, len(monitors))
+			assert.Equal(t, tt.expectedDtos, monitors)
 		})
 	}
 }
 
-func Test_mapMonitorToDTO(t *testing.T) {
-	name := "MyMonitor"
-	url := "https://example.com"
-	interval := 30
-	method := "POST"
-	retries := 5
-	monitorTimeout := 10
-	workspace := uint(1)
+func TestMonitorController_FindById(t *testing.T) {
+	helper.SetupDb()
+	e := echo.New()
+	monitorService := service.MonitorService{Repository: repository.MonitorRepository{}}
+	monitorController := MonitorController{monitorService: monitorService}
 
-	type args struct {
-		monitor *model.Monitor
-	}
+	e.GET("/workspaces/:workspaceId/monitors/:monitorId", monitorController.FindById)
+	createMonitorDTO := getCreateMonitorDTO()
+	monitor, err := monitorService.CreateMonitor(*createMonitorDTO, 1)
+	require.NoError(t, err)
+
 	tests := []struct {
-		name string
-		args args
-		want dto.MonitorDTO
+		name         string
+		monitorId    uint
+		workspaceId  string
+		expectedCode int
+		monitor      *model.Monitor
 	}{
-		{
-			name: "Valid Model",
-			args: args{
-				monitor: &model.Monitor{
-					Name:        name,
-					Url:         url,
-					Method:      method,
-					Retries:     retries,
-					Timeout:     monitorTimeout,
-					WorkspaceID: workspace,
-					Interval:    interval,
-				},
-			},
-			want: dto.MonitorDTO{
-				Name:     name,
-				Url:      url,
-				Method:   method,
-				Retries:  retries,
-				Timeout:  monitorTimeout,
-				Interval: interval,
-			},
-		},
+		{name: "Monitor in workspace 1", monitorId: monitor.ID, workspaceId: "1", expectedCode: http.StatusOK, monitor: monitor},
+		{name: "Monitor in workspace 2", monitorId: monitor.ID, workspaceId: "2", expectedCode: http.StatusForbidden, monitor: nil},
+		{name: "Monitor not found", monitorId: 999, workspaceId: "1", expectedCode: http.StatusNotFound, monitor: nil},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := mapMonitorToDTO(tt.args.monitor); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("mapMonitorToDTO() = %v, want %v", got, tt.want)
+			rec := httptest.NewRecorder()
+			req := httptest.NewRequest(http.MethodGet, "/", nil)
+			req.Header.Set("Content-Type", echo.MIMEApplicationJSON)
+			c := e.NewContext(req, rec)
+			c.SetPath("/api/workspaces/:workspaceId/monitors/:monitorId")
+			c.SetParamNames("workspaceId", "monitorId")
+			c.SetParamValues(tt.workspaceId, strconv.FormatUint(uint64(tt.monitorId), 10))
+			helper.SetupSession(c)
+			monitorController.FindById(c)
+			assert.Equal(t, tt.expectedCode, c.Response().Status)
+			if tt.monitor != nil {
+				var monitorDto dto.MonitorDTO
+				err := json.Unmarshal(rec.Body.Bytes(), &monitorDto)
+				require.NoError(t, err)
+				assert.Equal(t, mapMonitorToDTO(tt.monitor), monitorDto)
 			}
 		})
 	}
