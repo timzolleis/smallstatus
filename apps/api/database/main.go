@@ -9,13 +9,12 @@ import (
 
 var DB *gorm.DB
 
-func Connect(dbName string) *gorm.DB {
+func Connect(dbName string) (*gorm.DB, error) {
 	db, err := gorm.Open(sqlite.Open(dbName), &gorm.Config{})
 	if err != nil {
-		log.Fatalf("Could not open database connection: %s", err.Error())
+		return nil, err
 	}
-	DB = db
-	return db
+	return db, nil
 }
 
 func Migrate() {

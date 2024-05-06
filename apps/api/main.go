@@ -10,13 +10,18 @@ import (
 	"github.com/timzolleis/smallstatus/internal"
 	"github.com/timzolleis/smallstatus/middleware"
 	"github.com/timzolleis/smallstatus/routes"
+	"log"
 )
 
 func main() {
 	migrateFlag := flag.Bool("migrate", false, "Set to true to run database migrations")
 	startFlag := flag.Bool("start", false, "Set to true to start the server")
 	seedFlag := flag.Bool("seed", false, "Set to true to seed the database")
-	database.Connect("database.db")
+	db, err := database.Connect("database.db")
+	if err != nil {
+		log.Fatalf("Could not connect to database: %s", err.Error())
+	}
+	database.DB = db
 	flag.Parse()
 
 	if *migrateFlag {

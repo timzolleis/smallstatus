@@ -13,7 +13,6 @@ func HandleError(err error, c echo.Context) error {
 		return c.JSON(code, NewErrorResponse(err.Error(), code))
 	}
 	code := http.StatusInternalServerError
-
 	return c.JSON(code, NewErrorResponse(err.Error(), code))
 }
 
