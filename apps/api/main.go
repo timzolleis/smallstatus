@@ -16,7 +16,7 @@ func main() {
 	migrateFlag := flag.Bool("migrate", false, "Set to true to run database migrations")
 	startFlag := flag.Bool("start", false, "Set to true to start the server")
 	seedFlag := flag.Bool("seed", false, "Set to true to seed the database")
-	database.Connect()
+	database.Connect("database.db")
 	flag.Parse()
 
 	if *migrateFlag {
