@@ -6,3 +6,7 @@ func StringToUint(s string) uint {
 	i, _ := strconv.Atoi(s)
 	return uint(i)
 }
+
+func UintToString(i uint) string {
+	return strconv.Itoa(int(i))
+}
