@@ -40,7 +40,7 @@ func (controller *MonitorController) FindAll(c echo.Context) error {
 	}
 	monitorDTOs := make([]dto.MonitorDTO, len(monitors))
 	for i, monitor := range monitors {
-		monitorDTOs[i] = mapMonitorToDTO(&monitor)
+		monitorDTOs[i] = convertMonitorModelToDto(&monitor)
 	}
 	return c.JSON(http.StatusOK, monitorDTOs)
 }
@@ -55,7 +55,7 @@ func (controller *MonitorController) FindById(c echo.Context) error {
 	if monitor.WorkspaceID != workspaceId {
 		return helper.NewForbiddenError(c)
 	}
-	return c.JSON(http.StatusOK, mapMonitorToDTO(monitor))
+	return c.JSON(http.StatusOK, convertMonitorModelToDto(monitor))
 }
 
 func (controller *MonitorController) Create(c echo.Context) error {
@@ -73,7 +73,7 @@ func (controller *MonitorController) Create(c echo.Context) error {
 	if err != nil {
 		return helper.HandleError(err, c)
 	}
-	return c.JSON(http.StatusCreated, mapMonitorToDTO(monitor))
+	return c.JSON(http.StatusCreated, convertMonitorModelToDto(monitor))
 }
 
 func validateMonitorDTO(body dto.CreateMonitorDTO) error {
@@ -92,14 +92,14 @@ func (controller *MonitorController) Update(c echo.Context) error {
 	if !controller.isMonitorInWorkspace(monitorId, workspaceId) {
 		return helper.NewForbiddenError(c)
 	}
-	monitor := mapMonitorDTOToModel(&body, workspaceId)
+	monitor := convertMonitorDtoToModel(&body, workspaceId)
 	updatedMonitor, err := controller.monitorService.Update(&monitor)
 
 	if err != nil {
 		return helper.HandleError(err, c)
 	}
 
-	return c.JSON(http.StatusOK, mapMonitorToDTO(updatedMonitor))
+	return c.JSON(http.StatusOK, convertMonitorModelToDto(updatedMonitor))
 }
 
 func (controller *MonitorController) Delete(c echo.Context) error {
@@ -116,7 +116,7 @@ func (controller *MonitorController) Delete(c echo.Context) error {
 
 }
 
-func mapMonitorToDTO(monitor *model.Monitor) dto.MonitorDTO {
+func convertMonitorModelToDto(monitor *model.Monitor) dto.MonitorDTO {
 	return dto.MonitorDTO{
 		ID:       monitor.ID,
 		Name:     monitor.Name,
@@ -128,8 +128,9 @@ func mapMonitorToDTO(monitor *model.Monitor) dto.MonitorDTO {
 	}
 }
 
-func mapMonitorDTOToModel(dto *dto.MonitorDTO, workspace uint) model.Monitor {
+func convertMonitorDtoToModel(dto *dto.MonitorDTO, workspace uint) model.Monitor {
 	return model.Monitor{
+		Base:        model.Base{ID: dto.ID},
 		Name:        dto.Name,
 		Url:         dto.Url,
 		Interval:    dto.Interval,
